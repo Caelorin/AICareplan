@@ -1,5 +1,15 @@
+▲ Next.js 16.2.0 (Turbopack)
+- Local:         http://localhost:3002
+- Network:       http://198.18.0.1:3002
+- Environments: .env.local
+✓ Ready in 539ms
 
-> my-project@0.1.0 dev E:\code\AICareplan
-> next dev "--" "--port" "3001"
-
- ELIFECYCLE  Command failed with exit code 1.
+ GET /assessment 200 in 644ms (next.js: 403ms, application-code: 241ms)
+[kimi] API route called
+[kimi] Request body received: {"assessmentResult":{"dressing":"partial_assist","memory":"recent_decline","family_support":"average","hygiene":"need_reminder","eating":"independent","swallowing":"normal","behavior":["none"],"toilet
+[kimi] Prompt built, length: 1767
+[kimi] Using model: doubao-seed-2-0-mini-260215
+[kimi] API key present: true
+[kimi] Sending streaming request to AI...
+[kimi] Streaming AI response completed in 66.1s, length: 12924
+ POST /api/generate-plan 200 in 66s (next.js: 62ms, application-code: 66s)

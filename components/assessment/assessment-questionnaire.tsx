@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import type { SVGProps } from "react";
 import type { AssessmentResult } from "@/lib/types/care-plan";
 import {
   ASSESSMENT_QUESTIONS,
@@ -23,7 +24,10 @@ import {
   ListChecks,
 } from "lucide-react";
 
-const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+const CATEGORY_ICONS: Record<
+  string,
+  React.ComponentType<SVGProps<SVGSVGElement>>
+> = {
   adl: Activity,
   cognitive: Brain,
   sensory: Eye,
