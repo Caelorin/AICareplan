@@ -160,7 +160,38 @@ function CarePlanPrintDocument({
 
       <section className="print-section">
         <div className="print-section-heading">
-          <h2 className="print-section-title">二、照护方案</h2>
+          <h2 className="print-section-title">二、评估详情</h2>
+          <p className="print-section-subtitle">
+            评估结果按维度归档，便于课堂讲解和复盘护理决策。
+          </p>
+        </div>
+
+        {assessmentGroups.map((group, groupIndex) => (
+          <section key={group.id} className="print-group avoid-break">
+            <div className="print-group-header">
+              <h3 className="print-group-title">
+                {String(groupIndex + 1).padStart(2, "0")} {group.name}
+              </h3>
+              <span className="print-group-badge">{group.questions.length} 项</span>
+            </div>
+
+            <div className="print-grid print-grid-2">
+              {group.questions.map((item, index) => (
+                <div key={`${group.id}-${index}`} className="print-field">
+                  <p className="print-field-label">{item.question}</p>
+                  <p className="print-field-value print-field-value--multiline">
+                    {item.answer}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </section>
+
+      <section className="print-section">
+        <div className="print-section-heading">
+          <h2 className="print-section-title">三、照护方案</h2>
           <p className="print-section-subtitle">
             护理目标、措施、依据与注意事项已完整展开，打印时不会遗漏折叠内容。
           </p>
@@ -212,37 +243,6 @@ function CarePlanPrintDocument({
                 </div>
               </article>
             ))}
-          </section>
-        ))}
-      </section>
-
-      <section className="print-section">
-        <div className="print-section-heading">
-          <h2 className="print-section-title">三、评估详情</h2>
-          <p className="print-section-subtitle">
-            评估结果按维度归档，便于课堂讲解和复盘护理决策。
-          </p>
-        </div>
-
-        {assessmentGroups.map((group, groupIndex) => (
-          <section key={group.id} className="print-group avoid-break">
-            <div className="print-group-header">
-              <h3 className="print-group-title">
-                {String(groupIndex + 1).padStart(2, "0")} {group.name}
-              </h3>
-              <span className="print-group-badge">{group.questions.length} 项</span>
-            </div>
-
-            <div className="print-grid print-grid-2">
-              {group.questions.map((item, index) => (
-                <div key={`${group.id}-${index}`} className="print-field">
-                  <p className="print-field-label">{item.question}</p>
-                  <p className="print-field-value print-field-value--multiline">
-                    {item.answer}
-                  </p>
-                </div>
-              ))}
-            </div>
           </section>
         ))}
       </section>

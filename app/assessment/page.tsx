@@ -446,7 +446,7 @@ export default function AssessmentPage() {
   const generationElapsedText = formatElapsed(generationElapsedSeconds);
   const generationLiveStatus =
     generationSilentSeconds <= 3
-      ? "模型连接正常，正在持续处理"
+      ? "AI正在生成方案，请等待约30秒"
       : generationSilentSeconds <= 8
         ? "模型仍在处理中，当前阶段可能需要更久"
         : "暂时没有新文本返回，但任务仍在继续";
