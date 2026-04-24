@@ -1,0 +1,470 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* 教学风格主题 - 深蓝学术主色 + 温暖琥珀点缀 + 柔和象牙白背景 */
+  --background: oklch(0.98 0.003 85);
+  --foreground: oklch(0.16 0.025 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.16 0.025 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.16 0.025 250);
+  --primary: oklch(0.38 0.10 255);
+  --primary-foreground: oklch(0.98 0.003 85);
+  --secondary: oklch(0.96 0.012 85);
+  --secondary-foreground: oklch(0.25 0.06 255);
+  --muted: oklch(0.965 0.008 85);
+  --muted-foreground: oklch(0.50 0.02 250);
+  --accent: oklch(0.68 0.14 65);
+  --accent-foreground: oklch(0.16 0.025 250);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.90 0.010 85);
+  --input: oklch(0.92 0.010 85);
+  --ring: oklch(0.38 0.10 255);
+  --chart-1: oklch(0.38 0.10 255);
+  --chart-2: oklch(0.58 0.14 180);
+  --chart-3: oklch(0.68 0.14 65);
+  --chart-4: oklch(0.55 0.15 30);
+  --chart-5: oklch(0.50 0.08 150);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.975 0.006 85);
+  --sidebar-foreground: oklch(0.16 0.025 250);
+  --sidebar-primary: oklch(0.38 0.10 255);
+  --sidebar-primary-foreground: oklch(0.98 0.003 85);
+  --sidebar-accent: oklch(0.68 0.14 65);
+  --sidebar-accent-foreground: oklch(0.16 0.025 250);
+  --sidebar-border: oklch(0.90 0.010 85);
+  --sidebar-ring: oklch(0.38 0.10 255);
+
+  /* 教学专用色彩变量 */
+  --edu-info: oklch(0.55 0.14 240);
+  --edu-info-bg: oklch(0.95 0.03 240);
+  --edu-success: oklch(0.52 0.15 155);
+  --edu-success-bg: oklch(0.95 0.03 155);
+  --edu-warn: oklch(0.62 0.16 55);
+  --edu-warn-bg: oklch(0.96 0.04 65);
+  --edu-tip: oklch(0.55 0.12 290);
+  --edu-tip-bg: oklch(0.96 0.03 290);
+}
+
+.dark {
+  --background: oklch(0.15 0.025 250);
+  --foreground: oklch(0.96 0.005 85);
+  --card: oklch(0.19 0.028 250);
+  --card-foreground: oklch(0.96 0.005 85);
+  --popover: oklch(0.19 0.028 250);
+  --popover-foreground: oklch(0.96 0.005 85);
+  --primary: oklch(0.68 0.14 255);
+  --primary-foreground: oklch(0.15 0.025 250);
+  --secondary: oklch(0.25 0.035 250);
+  --secondary-foreground: oklch(0.96 0.005 85);
+  --muted: oklch(0.25 0.035 250);
+  --muted-foreground: oklch(0.68 0.02 85);
+  --accent: oklch(0.72 0.14 65);
+  --accent-foreground: oklch(0.15 0.025 250);
+  --destructive: oklch(0.50 0.20 27);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.28 0.035 250);
+  --input: oklch(0.28 0.035 250);
+  --ring: oklch(0.68 0.14 255);
+  --chart-1: oklch(0.68 0.14 255);
+  --chart-2: oklch(0.68 0.17 180);
+  --chart-3: oklch(0.72 0.14 65);
+  --chart-4: oklch(0.70 0.15 30);
+  --chart-5: oklch(0.60 0.10 150);
+  --sidebar: oklch(0.19 0.028 250);
+  --sidebar-foreground: oklch(0.96 0.005 85);
+  --sidebar-primary: oklch(0.68 0.14 255);
+  --sidebar-primary-foreground: oklch(0.15 0.025 250);
+  --sidebar-accent: oklch(0.72 0.14 65);
+  --sidebar-accent-foreground: oklch(0.15 0.025 250);
+  --sidebar-border: oklch(0.28 0.035 250);
+  --sidebar-ring: oklch(0.68 0.14 255);
+
+  --edu-info: oklch(0.68 0.14 240);
+  --edu-info-bg: oklch(0.22 0.04 240);
+  --edu-success: oklch(0.65 0.15 155);
+  --edu-success-bg: oklch(0.22 0.04 155);
+  --edu-warn: oklch(0.72 0.14 55);
+  --edu-warn-bg: oklch(0.22 0.04 65);
+  --edu-tip: oklch(0.68 0.12 290);
+  --edu-tip-bg: oklch(0.22 0.04 290);
+}
+
+@theme inline {
+  --font-sans: 'Noto Sans SC', 'Geist', system-ui, sans-serif;
+  --font-serif: 'Noto Serif SC', 'Source Serif 4', Georgia, serif;
+  --font-mono: 'Geist Mono', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* Container 居中 + 响应式 padding */
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+  max-width: 1280px;
+
+  @media (width >= 640px) {
+    padding-inline: 1.5rem;
+  }
+  @media (width >= 1024px) {
+    padding-inline: 2rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "kern", "liga", "calt";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4 {
+    letter-spacing: -0.01em;
+  }
+}
+
+/* ========== 教学系统设计系统 ========== */
+
+/* 学术章节标签 */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.section-label::before {
+  content: "";
+  display: inline-block;
+  width: 1.5rem;
+  height: 1px;
+  background: currentColor;
+}
+
+/* 学术装饰分隔线 */
+.academic-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--accent);
+}
+
+.academic-divider::before,
+.academic-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.4;
+}
+
+/* 纸张纹理（微妙） */
+.paper-texture {
+  background-image:
+    radial-gradient(circle at 1px 1px, oklch(0.88 0.012 70 / 0.3) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* ========== 教学页面专用组件 ========== */
+
+/* 页面标题区域 */
+.page-header {
+  position: relative;
+  padding-bottom: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.page-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, var(--primary), var(--accent), transparent);
+  border-radius: 2px;
+}
+
+/* 步骤指示器 */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.step-indicator--active {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 2px 8px oklch(0.38 0.10 255 / 0.3);
+}
+
+.step-indicator--inactive {
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+
+/* 教学卡片 - 左侧彩条装饰 */
+.edu-card {
+  position: relative;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--card);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.edu-card:hover {
+  border-color: oklch(from var(--primary) l c h / 0.3);
+  box-shadow: 0 4px 16px oklch(0 0 0 / 0.06);
+}
+
+.edu-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--primary), var(--accent));
+  border-radius: 4px 0 0 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.edu-card:hover::before {
+  opacity: 1;
+}
+
+/* 知识点高亮框 */
+.knowledge-box {
+  position: relative;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius);
+  border-left: 3px solid;
+  transition: transform 0.15s ease;
+}
+
+.knowledge-box--info {
+  border-color: var(--edu-info);
+  background: var(--edu-info-bg);
+}
+
+.knowledge-box--success {
+  border-color: var(--edu-success);
+  background: var(--edu-success-bg);
+}
+
+.knowledge-box--warn {
+  border-color: var(--edu-warn);
+  background: var(--edu-warn-bg);
+}
+
+.knowledge-box--tip {
+  border-color: var(--edu-tip);
+  background: var(--edu-tip-bg);
+}
+
+/* 评估进度条彩虹 */
+.assessment-progress-bar {
+  position: relative;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--muted);
+  height: 0.5rem;
+}
+
+.assessment-progress-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    oklch(0.55 0.22 27),
+    oklch(0.62 0.16 55) 30%,
+    oklch(0.68 0.14 65) 50%,
+    oklch(0.52 0.15 155) 70%,
+    oklch(0.38 0.10 255)
+  );
+  transition: transform 0.5s ease;
+}
+
+/* 分类标签色块 */
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+}
+
+/* 交互式问题卡片 */
+.question-card {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: oklch(from var(--card) l c h / 0.7);
+  backdrop-filter: blur(8px);
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.question-card:hover {
+  border-color: oklch(from var(--primary) l c h / 0.25);
+  box-shadow: 0 2px 12px oklch(0 0 0 / 0.04);
+}
+
+/* 选项悬停柔光 */
+.option-item {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: calc(var(--radius) - 2px);
+  border: 1px solid transparent;
+  background: var(--background);
+  padding: 0.625rem 0.875rem;
+  transition: all 0.15s ease;
+}
+
+.option-item:hover {
+  background: oklch(from var(--accent) l c h / 0.08);
+  border-color: oklch(from var(--accent) l c h / 0.2);
+}
+
+.option-item--selected {
+  border-color: var(--primary) !important;
+  background: oklch(from var(--primary) l c h / 0.06) !important;
+  box-shadow: 0 0 0 1px oklch(from var(--primary) l c h / 0.1);
+}
+
+/* 表格行交替色 */
+.table-striped tbody tr:nth-child(even) {
+  background: oklch(from var(--muted) l c h / 0.4);
+}
+
+/* 页面过渡动画 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.animate-fade-in-up-delay-1 { animation-delay: 0.1s; opacity: 0; }
+.animate-fade-in-up-delay-2 { animation-delay: 0.2s; opacity: 0; }
+.animate-fade-in-up-delay-3 { animation-delay: 0.3s; opacity: 0; }
+
+/* 教学提示脉冲 */
+@keyframes gentlePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}
+
+.animate-gentle-pulse {
+  animation: gentlePulse 2.5s ease-in-out infinite;
+}
+
+/* 成功对勾弹出 */
+@keyframes checkPop {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-check-pop {
+  animation: checkPop 0.4s ease forwards;
+}
+
+/* 打印样式 */
+@media print {
+  .print\:hidden {
+    display: none !important;
+  }
+  
+  .print\:py-4 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  body {
+    font-size: 12px;
+  }
+  
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .edu-card::before,
+  .knowledge-box {
+    border-left-width: 2px;
+  }
+}
