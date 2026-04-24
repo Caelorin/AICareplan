@@ -16,7 +16,7 @@ export function Footer() {
                 AI老年人照护方案生成系统
               </span>
               <span className="text-[11px] tracking-wide text-muted-foreground">
-                护理专业教学辅助平台 · 仅供教学参考
+                养老专业教学平台 · 仅供教学参考
               </span>
             </div>
           </div>

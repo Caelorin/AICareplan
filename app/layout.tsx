@@ -20,7 +20,7 @@ const notoSerif = Noto_Serif_SC({
 export const metadata: Metadata = {
   title: "AI老年人照护方案生成系统",
   description:
-    "面向护理专业学生的AI辅助教学系统，通过智能生成个性化照护方案，帮助学生理解跨学科护理计划的制定逻辑，实现自主学习与能力提升。",
+    "面向养老专业学生的AI辅助教学系统，通过智能生成个性化照护方案，帮助学生理解跨学科照护计划的制定逻辑，实现自主学习与能力提升。",
   generator: "kimi",
   keywords: ["老年护理", "照护方案", "AI辅助教学", "护理教育", "养老照护"],
   icons: {

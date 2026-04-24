@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type {
   ElderInfo,
@@ -55,7 +55,41 @@ type GeneratePlanStreamStage =
 type GeneratePlanStreamHandlers = {
   onStatus?: (stage: GeneratePlanStreamStage) => void;
   onDelta?: (delta: string) => void;
+  onHeartbeat?: () => void;
 };
+
+type GenerationUiStage =
+  | "idle"
+  | "connecting"
+  | "analyzing"
+  | "writing"
+  | "finalizing"
+  | "parsing";
+
+const GENERATION_STAGE_ORDER: GenerationUiStage[] = [
+  "connecting",
+  "analyzing",
+  "writing",
+  "finalizing",
+];
+
+const GENERATION_STAGE_LABELS: Record<GenerationUiStage, string> = {
+  idle: "等待开始",
+  connecting: "提交请求",
+  analyzing: "分析评估",
+  writing: "生成方案",
+  finalizing: "整理保存",
+  parsing: "整理保存",
+};
+
+function formatElapsed(seconds: number) {
+  const minutes = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, "0");
+  const remainingSeconds = (seconds % 60).toString().padStart(2, "0");
+
+  return `${minutes}:${remainingSeconds}`;
+}
 
 async function readGeneratePlanStream(
   stream: ReadableStream<Uint8Array>,
@@ -114,6 +148,10 @@ async function readGeneratePlanStream(
           fullText += delta;
           handlers.onDelta?.(delta);
         }
+        break;
+
+      case "heartbeat":
+        handlers.onHeartbeat?.();
         break;
 
       case "complete":
@@ -186,10 +224,30 @@ export default function AssessmentPage() {
   const [generationStatusText, setGenerationStatusText] = useState(
     "准备开始生成..."
   );
+  const [generationStage, setGenerationStage] =
+    useState<GenerationUiStage>("idle");
+  const [generationElapsedSeconds, setGenerationElapsedSeconds] = useState(0);
+  const [lastGenerationActivityAt, setLastGenerationActivityAt] = useState<
+    number | null
+  >(null);
   const [error, setError] = useState<string | null>(null);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [generatedPlanId, setGeneratedPlanId] = useState<string | null>(null);
   const [selectedPreset, setSelectedPreset] = useState<string>("");
+
+  useEffect(() => {
+    if (!isGenerating) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setGenerationElapsedSeconds((prev) => prev + 1);
+    }, 1000);
+
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [isGenerating]);
 
   // 加载预设案例
   const handleLoadPreset = (presetId: string) => {
@@ -247,6 +305,9 @@ export default function AssessmentPage() {
     setIsGenerating(true);
     setError(null);
     setGenerationProgress(0);
+    setGenerationStage("connecting");
+    setGenerationElapsedSeconds(0);
+    setLastGenerationActivityAt(Date.now());
     setGenerationStatusText("正在提交评估数据...");
 
     try {
@@ -280,21 +341,26 @@ export default function AssessmentPage() {
 
         aiText = await readGeneratePlanStream(response.body, {
           onStatus: (stage) => {
+            setLastGenerationActivityAt(Date.now());
             switch (stage) {
               case "started":
                 setGenerationProgress(8);
+                setGenerationStage("connecting");
                 setGenerationStatusText("已提交生成请求，正在连接模型...");
                 break;
               case "created":
                 setGenerationProgress(18);
+                setGenerationStage("analyzing");
                 setGenerationStatusText("模型已接收请求，开始分析评估结果...");
                 break;
               case "generating":
                 setGenerationProgress((prev) => Math.max(prev, 30));
+                setGenerationStage("writing");
                 setGenerationStatusText("正在生成照护方案正文...");
                 break;
               case "completed":
                 setGenerationProgress(95);
+                setGenerationStage("finalizing");
                 setGenerationStatusText("模型输出完成，正在整理方案...");
                 break;
               default:
@@ -302,10 +368,15 @@ export default function AssessmentPage() {
             }
           },
           onDelta: (delta) => {
+            setLastGenerationActivityAt(Date.now());
             setGenerationProgress((prev) =>
               Math.min(prev + Math.max(1, Math.ceil(delta.length / 400)), 90)
             );
+            setGenerationStage("writing");
             setGenerationStatusText("正在生成照护方案正文...");
+          },
+          onHeartbeat: () => {
+            setLastGenerationActivityAt(Date.now());
           },
         });
       } else {
@@ -314,6 +385,7 @@ export default function AssessmentPage() {
       }
 
       setGenerationProgress(100);
+      setGenerationStage("parsing");
       setGenerationStatusText("方案生成完成，正在解析结构化结果...");
 
       if (!aiText) {
@@ -346,6 +418,7 @@ export default function AssessmentPage() {
       setGeneratedPlanId(planId);
       setShowSuccessDialog(true);
     } catch (err) {
+      setGenerationStage("idle");
       setError(err instanceof Error ? err.message : "生成照护方案失败");
     } finally {
       setIsGenerating(false);
@@ -366,6 +439,27 @@ export default function AssessmentPage() {
     setGeneratedPlanId(null);
     setSelectedPreset("");
   };
+
+  const generationSilentSeconds = lastGenerationActivityAt
+    ? Math.max(0, Math.floor((Date.now() - lastGenerationActivityAt) / 1000))
+    : 0;
+  const generationElapsedText = formatElapsed(generationElapsedSeconds);
+  const generationLiveStatus =
+    generationSilentSeconds <= 3
+      ? "模型连接正常，正在持续处理"
+      : generationSilentSeconds <= 8
+        ? "模型仍在处理中，当前阶段可能需要更久"
+        : "暂时没有新文本返回，但任务仍在继续";
+  const generationLiveHint =
+    generationElapsedSeconds < 15
+      ? "这一步通常需要 20 到 60 秒，系统会持续刷新状态。"
+      : generationSilentSeconds <= 5
+        ? "刚刚收到模型活动，说明任务还在正常推进。"
+        : "长文本生成会出现短暂停顿，这不是死机，模型还在工作。";
+  const generationStageIndex = Math.max(
+    GENERATION_STAGE_ORDER.indexOf(generationStage),
+    generationStage === "parsing" ? GENERATION_STAGE_ORDER.length - 1 : 0
+  );
 
   return (
     <div className="container max-w-6xl py-8 lg:py-12">
@@ -526,30 +620,78 @@ export default function AssessmentPage() {
               正在生成照护方案
             </DialogTitle>
             <DialogDescription>
-              AI 正在分析评估结果并制定个性化照护方案，请稍候...
+              这一步通常需要一点时间。页面会持续显示实时状态，请不要关闭。
             </DialogDescription>
           </DialogHeader>
-          <div className="py-4">
-            <Progress value={generationProgress} className="h-2" />
-            <div className="mt-3 flex items-start justify-between gap-4">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">
-                  {generationProgress < 30 && "📋 分析老人基本情况..."}
-                  {generationProgress >= 30 &&
-                    generationProgress < 60 &&
-                    "🔍 评估护理需求..."}
-                  {generationProgress >= 60 &&
-                    generationProgress < 90 &&
-                    "📝 制定护理措施..."}
-                  {generationProgress >= 90 && "✅ 整理输出方案..."}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {generationStatusText}
-                </p>
+          <div className="space-y-4 py-4">
+            <div className="rounded-xl border border-primary/10 bg-muted/40 p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--edu-success)] opacity-70" />
+                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[var(--edu-success)]" />
+                  </span>
+                  <p className="text-sm font-medium">{generationLiveStatus}</p>
+                </div>
+                <span className="shrink-0 text-xs font-semibold text-primary">
+                  已耗时 {generationElapsedText}
+                </span>
               </div>
-              <span className="text-xs font-medium text-primary">
-                {Math.round(generationProgress)}%
-              </span>
+              <p className="mt-2 text-xs leading-5 text-muted-foreground">
+                {generationLiveHint}
+              </p>
+            </div>
+
+            <div>
+              <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
+                <span>阶段推进</span>
+                <span>{GENERATION_STAGE_LABELS[generationStage]}</span>
+              </div>
+              <Progress value={generationProgress} className="h-2" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {GENERATION_STAGE_ORDER.map((stageKey, index) => {
+                const isDone = index < generationStageIndex;
+                const isActive = index === generationStageIndex;
+
+                return (
+                  <div
+                    key={stageKey}
+                    className={[
+                      "rounded-lg border px-3 py-2 transition-colors",
+                      isDone
+                        ? "border-[var(--edu-success)]/35 bg-[var(--edu-success-bg)]/50 text-[var(--edu-success)]"
+                        : isActive
+                          ? "border-primary/25 bg-primary/8 text-foreground"
+                          : "border-border bg-background/70 text-muted-foreground",
+                    ].join(" ")}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={[
+                          "flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold",
+                          isDone
+                            ? "bg-[var(--edu-success)]/14"
+                            : isActive
+                              ? "bg-primary/12 text-primary"
+                              : "bg-muted text-muted-foreground",
+                        ].join(" ")}
+                      >
+                        {isDone ? "✓" : index + 1}
+                      </span>
+                      <span>{GENERATION_STAGE_LABELS[stageKey]}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="rounded-lg border border-border/80 bg-background/80 px-3 py-2">
+              <p className="text-sm font-medium text-foreground">当前系统提示</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                {generationStatusText}
+              </p>
             </div>
           </div>
         </DialogContent>

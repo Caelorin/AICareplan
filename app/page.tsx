@@ -23,7 +23,7 @@ const features = [
     icon: Brain,
     title: "AI智能分析",
     description:
-      "基于豆包AI大模型，结合评估结果智能生成个性化照护方案，提供专业的护理决策依据。",
+      "基于豆包AI大模型，结合评估结果智能生成个性化照护方案，提供专业的照护决策依据。",
   },
   {
     icon: FileText,
@@ -35,7 +35,7 @@ const features = [
     icon: GraduationCap,
     title: "教学导向设计",
     description:
-      "每项护理建议都包含护理依据和注意事项，帮助学生理解护理决策的专业逻辑。",
+      "每项照护建议都包含照护依据和注意事项，帮助学生理解照护决策的专业逻辑。",
   },
 ];
 
@@ -74,7 +74,7 @@ export default function HomePage() {
             <div className="mb-8 flex items-center justify-center gap-3">
               <div className="h-px w-12 bg-accent" />
               <span className="section-label !m-0 before:hidden">
-                护理教学 · Teaching Aid
+                养老教学 · Teaching Aid
               </span>
               <div className="h-px w-12 bg-accent" />
             </div>
@@ -98,8 +98,8 @@ export default function HomePage() {
 
             {/* 摘要描述 */}
             <p className="mx-auto mb-10 max-w-2xl text-center leading-relaxed text-muted-foreground text-balance">
-              面向护理专业学生的智能辅助学习平台，通过 AI
-              生成的个性化照护方案进行自主学习，理解跨学科护理计划的制定逻辑，培养专业护理思维。
+              面向养老专业学生的智能辅助学习平台，通过 AI
+              生成的个性化照护方案进行自主学习，理解跨学科照护计划的制定逻辑，培养专业照护思维。
             </p>
 
             {/* 行动按钮 */}
@@ -154,7 +154,7 @@ export default function HomePage() {
               系统功能特点
             </h2>
             <p className="mx-auto mt-4 max-w-2xl leading-relaxed text-muted-foreground">
-              基于专业护理学知识和 AI 技术，为护理教学提供科学、系统的辅助工具
+              基于专业养老照护知识和 AI 技术，为养老教学提供科学、系统的辅助工具
             </p>
           </div>
 
@@ -246,16 +246,16 @@ export default function HomePage() {
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
               <p className="mb-8 leading-relaxed text-muted-foreground">
-                本系统专为护理专业教学设计，通过 AI
-                辅助学习的方式，帮助学生更好地理解和掌握老年护理知识，同时减轻教师的教学负担。
+                本系统专为养老专业教学设计，通过 AI
+                辅助学习的方式，帮助学生更好地理解和掌握老年照护知识，同时减轻教师的教学负担。
               </p>
 
               <div className="space-y-4">
                 {[
                   "学生可自主进行评估练习，与 AI 方案对比学习",
-                  "理解护理决策的专业依据和逻辑推理过程",
+                  "理解照护决策的专业依据和逻辑推理过程",
                   "减少教师重复性评改工作，聚焦个性化指导",
-                  "标准化的评估流程，培养系统性护理思维",
+                  "标准化的评估流程，培养系统性照护思维",
                 ].map((benefit, index) => (
                   <div
                     key={benefit}
@@ -287,10 +287,10 @@ export default function HomePage() {
 
                 <ul className="space-y-3">
                   {[
-                    "护理专业在校学生",
-                    "老年护理方向学习者",
-                    "护理专业教师",
-                    "养老护理从业人员",
+                    "养老专业在校学生",
+                    "老年照护方向学习者",
+                    "养老专业教师",
+                    "养老服务从业人员",
                   ].map((item) => (
                     <li
                       key={item}
@@ -320,7 +320,7 @@ export default function HomePage() {
               开始您的第一次评估
             </h2>
             <p className="mb-8 leading-relaxed text-muted-foreground">
-              体验 AI 辅助照护方案生成，提升护理专业能力
+              体验 AI 辅助照护方案生成，提升养老照护专业能力
             </p>
             <Button asChild size="lg">
               <Link href="/assessment">

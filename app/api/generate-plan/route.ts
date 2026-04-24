@@ -127,7 +127,7 @@ export async function POST(request: Request) {
     }
 
     const startTime = Date.now();
-    const singleInput = `你是一位专业的老年护理专家，拥有丰富的跨学科护理经验。你的任务是根据老人的评估信息制定个性化、可操作、有循证依据的照护方案。请用专业但易懂的语言，帮助护理专业学生理解护理决策的逻辑。请严格按照要求的JSON格式输出。\n\n${prompt}`;
+    const singleInput = `你是一位专业的老年护理专家，拥有丰富的跨学科护理经验。你的任务是根据老人的评估信息制定个性化、可操作、有循证依据的照护方案。请用专业但易懂的语言，帮助养老专业学生理解照护决策的逻辑。请严格按照要求的JSON格式输出。\n\n${prompt}`;
 
     console.log("[kimi] Sending streaming request to AI...");
 
@@ -187,9 +187,17 @@ export async function POST(request: Request) {
       async start(controller) {
         let buffer = "";
         let fullText = "";
+        let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
 
         const sendEvent = (event: string, payload: unknown) => {
           controller.enqueue(encodeSseMessage(event, payload));
+        };
+
+        const clearHeartbeat = () => {
+          if (heartbeatTimer) {
+            clearInterval(heartbeatTimer);
+            heartbeatTimer = null;
+          }
         };
 
         const processEvent = (rawEvent: string) => {
@@ -275,6 +283,10 @@ export async function POST(request: Request) {
         };
 
         sendEvent("status", { stage: "started" });
+        sendEvent("heartbeat", { ts: Date.now() });
+        heartbeatTimer = setInterval(() => {
+          sendEvent("heartbeat", { ts: Date.now() });
+        }, 2500);
 
         try {
           while (true) {
@@ -309,14 +321,17 @@ export async function POST(request: Request) {
           );
 
           sendEvent("complete", { content: fullText });
+          clearHeartbeat();
           controller.close();
         } catch (error) {
           const errorMessage =
             error instanceof Error ? error.message : "流式生成失败";
           console.error("[kimi] Stream processing failed:", error);
+          clearHeartbeat();
           sendEvent("error", { error: errorMessage });
           controller.close();
         } finally {
+          clearHeartbeat();
           await upstreamReader.cancel().catch(() => undefined);
         }
       },
