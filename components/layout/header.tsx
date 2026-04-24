@@ -15,7 +15,7 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70 print:hidden">
       {/* 顶部学术装饰条 - 渐变色带 */}
       <div className="h-[3px] bg-gradient-to-r from-primary via-accent/80 to-primary/60" />
 
